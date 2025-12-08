@@ -1,214 +1,275 @@
-# Niaga Platform
+# Kilang Desa Murni Batik
 
-> Malaysian Fabric E-Commerce Platform - Multi-Service Architecture
+> 🛒 E-commerce platform for Malaysian batik products with microservices architecture
 
-## 🏗️ System Architecture
+---
+
+## 📋 Project Overview
+
+**Kilang Desa Murni Batik** is a full-featured e-commerce platform built with microservices architecture, designed for selling traditional Malaysian batik products online.
+
+### Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Backend** | Go 1.23, Gin Framework, GORM |
+| **Frontend** | Next.js 14, TypeScript, Tailwind CSS |
+| **Database** | PostgreSQL 16 |
+| **Cache** | Redis 7 |
+| **Storage** | MinIO (S3-compatible) |
+| **Message Queue** | NATS |
+| **Reverse Proxy** | Nginx |
+| **Container** | Docker, Docker Compose |
+
+---
+
+## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        FRONTENDS                             │
-├─────────────────┬─────────────────┬─────────────────────────┤
-│   Storefront    │     Admin       │      Warehouse          │
-│   (Next.js)     │   (Next.js)     │      (Next.js)          │
-│   Port: 3000    │   Port: 3001    │      Port: 3002         │
-└────────┬────────┴────────┬────────┴───────────┬─────────────┘
-         │                 │                    │
-         ▼                 ▼                    ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      API GATEWAY                             │
-│                    (Port: 8080)                              │
-└─────────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    MICROSERVICES (Go)                        │
-├──────────┬──────────┬──────────┬──────────┬─────────────────┤
-│   Auth   │ Catalog  │  Order   │ Customer │   Inventory     │
-│  :8001   │  :8002   │  :8004   │  :8003   │    :8005        │
-├──────────┴──────────┼──────────┴──────────┼─────────────────┤
-│    Notification     │    Reporting        │     Agent       │
-│       :8006         │      :8007          │     :8008       │
-└─────────────────────┴─────────────────────┴─────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     INFRASTRUCTURE                           │
-├────────────┬────────────┬────────────┬────────────┬─────────┤
-│ PostgreSQL │   Redis    │ Meilisearch│   MinIO    │  NATS   │
-│   :5432    │   :6379    │   :7700    │   :9000    │  :4222  │
-└────────────┴────────────┴────────────┴────────────┴─────────┘
+                    ┌─────────────────────────────────────────────────────┐
+                    │                    NGINX (80/443)                   │
+                    │              Reverse Proxy + SSL + Rate Limit       │
+                    └─────────────────────────────────────────────────────┘
+                                             │
+         ┌───────────────────────────────────┼───────────────────────────────────┐
+         ▼                                   ▼                                   ▼
+┌─────────────────┐              ┌─────────────────┐              ┌─────────────────┐
+│   Storefront    │              │     Admin       │              │   Warehouse     │
+│   (Next.js)     │              │   (Next.js)     │              │   (Next.js)     │
+│   Port: 3000    │              │   /admin        │              │   /warehouse    │
+└─────────────────┘              └─────────────────┘              └─────────────────┘
+         │                                   │                                   │
+         └───────────────────────────────────┼───────────────────────────────────┘
+                                             ▼
+                              ┌────────────────────────┐
+                              │      API Gateway       │
+                              │    /api/v1/*           │
+                              └────────────────────────┘
+                                             │
+    ┌────────────────┬────────────────┬──────┴──────┬────────────────┬────────────────┐
+    ▼                ▼                ▼             ▼                ▼                ▼
+┌────────┐    ┌──────────┐    ┌───────────┐   ┌─────────┐    ┌──────────┐    ┌──────────┐
+│  Auth  │    │ Catalog  │    │ Inventory │   │  Order  │    │ Customer │    │  Agent   │
+│  8001  │    │   8002   │    │   8003    │   │  8005   │    │   8004   │    │   8006   │
+└────────┘    └──────────┘    └───────────┘   └─────────┘    └──────────┘    └──────────┘
+    │                │                │             │                │                │
+    └────────────────┴────────────────┼─────────────┴────────────────┴────────────────┘
+                                      ▼
+    ┌─────────────────────────────────┴─────────────────────────────────┐
+    │                         Infrastructure                            │
+    │  ┌──────────┐  ┌───────┐  ┌───────┐  ┌──────┐  ┌──────────────┐  │
+    │  │ Postgres │  │ Redis │  │ MinIO │  │ NATS │  │ Notification │  │
+    │  │   5432   │  │ 6379  │  │ 9000  │  │ 4222 │  │     8008     │  │
+    │  └──────────┘  └───────┘  └───────┘  └──────┘  └──────────────┘  │
+    └───────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📦 Repository Structure
+## 📁 Repository Structure
 
-| Repository | Type | Description |
-|------------|------|-------------|
-| `frontend-storefront` | Next.js 14 | Customer shopping website |
-| `frontend-admin` | Next.js 16 | Admin dashboard |
-| `frontend-warehouse` | Next.js 14 | Warehouse operations |
-| `frontend-agent` | Components | Shared agent components |
-| `service-auth` | Go | Authentication & RBAC |
-| `service-catalog` | Go | Products, categories, designs |
-| `service-customer` | Go | Customer profiles |
-| `service-order` | Go | Orders & payments |
-| `service-inventory` | Go | Stock management |
-| `service-notification` | Go | Email/SMS/Push |
-| `service-reporting` | Go | Analytics & reports |
-| `service-agent` | Go | Agent/reseller system |
-| `lib-common` | Go | Shared utilities |
-| `database` | SQL | Migration scripts |
-
----
-
-## 🚀 Quick Start
-
-### 1. Clone All Repos
-```bash
-gh repo list niaga-platform --limit 50 | while read repo _; do
-  gh repo clone "$repo"
-done
 ```
-
-### 2. Start Infrastructure
-```bash
-docker compose up -d postgres redis meilisearch minio nats
-```
-
-### 3. Start Backend Services
-```bash
-# From niaga-platform root
-docker compose up -d service-auth service-catalog service-order
-```
-
-### 4. Start Frontend
-```bash
-cd frontend-storefront && npm install && npm run dev
-cd frontend-admin && npm install && npm run dev
-```
-
----
-
-## 🔧 Environment Variables
-
-### Frontend (.env.local)
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8080
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
-
-### Backend (.env)
-```env
-APP_ENV=development
-APP_PORT=8001
-DATABASE_URL=postgres://niaga:password@localhost:5432/niaga?sslmode=disable
-REDIS_URL=redis://localhost:6379
-JWT_SECRET=your-secret-key
+KilangDesaMurniBatik/
+│
+├── 🔧 infra-platform/          # Infrastructure & deployment
+│   ├── docker-compose.vps.yml  # Production Docker Compose
+│   ├── nginx/                  # Nginx configuration
+│   │   ├── nginx.conf          # Main config
+│   │   └── proxy_params        # Proxy settings
+│   └── .env                    # Environment variables
+│
+├── 📚 lib-common/              # Shared Go library
+│   ├── auth/                   # JWT authentication
+│   ├── database/               # PostgreSQL & Redis helpers
+│   ├── middleware/             # CORS, Rate limiting, Recovery
+│   ├── logger/                 # Zap structured logging
+│   └── response/               # Standard API responses
+│
+├── 🔐 service-auth/            # Authentication service (8001)
+│   ├── cmd/server/             # Entry point
+│   ├── internal/
+│   │   ├── handlers/           # HTTP handlers
+│   │   ├── services/           # Business logic
+│   │   ├── repository/         # Data access
+│   │   └── models/             # Domain models
+│   └── Dockerfile
+│
+├── 📦 service-catalog/         # Product catalog (8002)
+├── 📊 service-inventory/       # Stock management (8003)
+├── 🛒 service-order/           # Order processing (8005)
+├── 👤 service-customer/        # Customer management (8004)
+├── 🤝 service-agent/           # Agent/reseller system (8006)
+├── 📈 service-reporting/       # Analytics & reports (8007)
+├── 📧 service-notification/    # Email/SMS notifications (8008)
+│
+├── 🖥️ frontend-storefront/     # Customer-facing store
+│   ├── src/app/                # Next.js App Router
+│   ├── src/components/         # React components
+│   └── Dockerfile
+│
+├── 👔 frontend-admin/          # Admin dashboard (/admin)
+├── 📦 frontend-warehouse/      # Warehouse portal (/warehouse)
+├── 📱 frontend-agent/          # Agent components library
+│
+├── 🗄️ database/                # Database migrations
+│   └── migrations/             # SQL migration files
+│
+└── 📖 kilang-docs/             # This documentation
 ```
 
 ---
 
-## 🗄️ Database Schema
+## 🚀 Services
 
-### Core Tables
-- `users` - Customer accounts
-- `admin_users` - Admin accounts with roles
-- `products` - Product catalog
-- `categories` - Product categories
-- `orders` - Customer orders
-- `order_items` - Order line items
-- `payments` - Payment records
-- `inventory` - Stock levels
+### Backend Services
 
-### Agent Tables
-- `agents` - Reseller accounts
-- `agent_commissions` - Commission tracking
-- `referrals` - Referral links
+| Service | Port | Description |
+|---------|------|-------------|
+| **service-auth** | 8001 | Authentication, JWT, RBAC |
+| **service-catalog** | 8002 | Products, Categories, Images |
+| **service-inventory** | 8003 | Stock levels, Warehouses, Transfers |
+| **service-order** | 8005 | Orders, Payments, Shipping |
+| **service-customer** | 8004 | Customer profiles, Wishlist |
+| **service-agent** | 8006 | Agents, Commissions |
+| **service-reporting** | 8007 | Sales reports, Analytics |
+| **service-notification** | 8008 | Email, SMS notifications |
 
----
+### Frontend Applications
 
-## 🔐 Authentication
+| Application | Path | Description |
+|-------------|------|-------------|
+| **frontend-storefront** | `/` | Public e-commerce store |
+| **frontend-admin** | `/admin` | Admin management dashboard |
+| **frontend-warehouse** | `/warehouse` | Warehouse operations (PWA) |
 
-### JWT Flow
-1. Login → `POST /api/v1/auth/login`
-2. Receive access + refresh tokens
-3. Include `Authorization: Bearer <token>` in requests
-4. Refresh when expired → `POST /api/v1/auth/refresh`
+### Infrastructure
 
-### RBAC Roles
-- `SUPER_ADMIN` - Full access
-- `MANAGER` - Most features except system settings
-- `STAFF_ORDERS` - Order management only
-- `STAFF_PRODUCTS` - Product management only
-- `AGENT` - Agent dashboard only
-
----
-
-## 📡 API Endpoints
-
-### Auth Service (8001)
-```
-POST   /api/v1/auth/register
-POST   /api/v1/auth/login
-POST   /api/v1/auth/refresh
-GET    /api/v1/auth/me
-```
-
-### Catalog Service (8002)
-```
-GET    /api/v1/catalog/products
-GET    /api/v1/catalog/products/:id
-GET    /api/v1/catalog/categories
-GET    /api/v1/catalog/fabric-designs
-GET    /api/v1/catalog/colors
-```
-
-### Order Service (8004)
-```
-POST   /api/v1/orders
-GET    /api/v1/orders/:id
-PATCH  /api/v1/orders/:id/status
-POST   /api/v1/orders/:id/payment
-```
+| Service | Port | Description |
+|---------|------|-------------|
+| **Nginx** | 80, 443 | Reverse proxy, SSL, Rate limiting |
+| **PostgreSQL** | 5432 | Primary database |
+| **Redis** | 6379 | Cache & sessions |
+| **MinIO** | 9000 | Object storage (images) |
+| **NATS** | 4222 | Message queue |
 
 ---
 
-## 🐳 Docker Commands
+## 🛠️ Quick Start
+
+### Prerequisites
+
+- Docker & Docker Compose
+- Git
+- Node.js 20+ (for local development)
+- Go 1.23+ (for local development)
+
+### Clone Repositories
 
 ```bash
-# Build all services
-docker build -f service-auth/Dockerfile -t service-auth .
-docker build -f service-catalog/Dockerfile -t service-catalog .
+# Clone all repositories
+gh repo list KilangDesaMurniBatik --json name -q ".[].name" | \
+  xargs -I {} git clone https://github.com/KilangDesaMurniBatik/{}.git
+```
 
-# Run single service
-docker run -p 8001:8001 --env-file .env service-auth
+### Deploy to VPS
+
+```bash
+cd infra-platform
+
+# Create .env file
+cp .env.example .env
+# Edit .env with your values
+
+# Start all services
+docker compose -f docker-compose.vps.yml up -d --build
 
 # View logs
-docker logs -f service-auth
+docker compose -f docker-compose.vps.yml logs -f
+
+# Check status
+docker compose -f docker-compose.vps.yml ps
 ```
 
 ---
 
-## ✅ Build Status
+## 🔑 Environment Variables
 
-| Component | Status |
-|-----------|--------|
-| frontend-storefront | ✅ Pass |
-| frontend-admin | ✅ Pass |
-| frontend-warehouse | ✅ Pass |
-| service-auth | ✅ Pass |
-| service-catalog | ✅ Pass |
-| service-order | ✅ Pass |
-| service-customer | ✅ Pass |
-| service-inventory | ✅ Pass |
-| service-notification | ✅ Pass |
-| service-reporting | ✅ Pass |
-| service-agent | ✅ Pass |
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DOMAIN` | VPS IP or domain | `72.62.67.167` |
+| `POSTGRES_USER` | Database user | `kilang` |
+| `POSTGRES_PASSWORD` | Database password | `secure_password` |
+| `JWT_SECRET` | JWT signing key (32+ chars) | `your_secret_key` |
+| `MINIO_ROOT_USER` | MinIO admin user | `kilangadmin` |
+| `MINIO_ROOT_PASSWORD` | MinIO admin password | `secure_password` |
+| `CORS_ORIGINS` | Allowed origins | `http://domain.com` |
+| `SMTP_USER` | Email username | `email@gmail.com` |
+| `SMTP_PASSWORD` | Email app password | `app_password` |
+
+---
+
+## 🔒 Security Features
+
+- ✅ JWT authentication with 15-minute expiry
+- ✅ bcrypt password hashing
+- ✅ Rate limiting (10 req/s API, 5 req/m login)
+- ✅ Non-root Docker containers
+- ✅ Internal services bound to 127.0.0.1
+- ✅ Security headers (X-Frame-Options, CSP, etc.)
+- ✅ HTTPS ready (SSL configuration included)
+
+---
+
+## 📊 Resource Requirements
+
+**Minimum VPS Specs:** 4GB RAM, 2 vCPU
+
+| Category | Allocated | 
+|----------|-----------|
+| Total Memory | ~3.4 GB |
+| Total CPU | ~3.25 vCPU |
+
+---
+
+## 📝 API Documentation
+
+### Base URL
+```
+http://your-domain.com/api/v1
+```
+
+### Authentication
+```http
+POST /api/v1/auth/login
+POST /api/v1/auth/register
+POST /api/v1/auth/refresh
+GET  /api/v1/auth/me
+```
+
+### Products
+```http
+GET  /api/v1/products
+GET  /api/v1/products/:id
+POST /api/v1/products (admin)
+PUT  /api/v1/products/:id (admin)
+```
+
+### Orders
+```http
+POST /api/v1/orders
+GET  /api/v1/orders
+GET  /api/v1/orders/:id
+PUT  /api/v1/orders/:id/status (admin)
+```
 
 ---
 
 ## 📞 Support
 
-- **GitHub**: github.com/niaga-platform
-- **Docs**: See `/niaga-docs` repository
+For issues and questions, please create an issue in the relevant repository.
+
+---
+
+## 📜 License
+
+MIT License - Kilang Desa Murni Batik © 2024
