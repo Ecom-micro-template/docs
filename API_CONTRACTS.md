@@ -49,6 +49,20 @@ API contract documentation for all microservices.
 | PUT | `/admin/roles/:id` | Update role | `roles.update` |
 | DELETE | `/admin/roles/:id` | Delete role | `roles.delete` |
 | GET | `/admin/permissions` | List all permissions | `roles.view` |
+| GET | `/admin/roles/hierarchy` | Get role hierarchy tree | `roles.view` |
+| PUT | `/admin/roles/:id/parent` | Set role parent | `roles.update` |
+| POST | `/admin/roles/validate-permissions` | Validate permission codes | `roles.view` |
+| GET | `/admin/roles/templates` | List role templates | `roles.view` |
+| GET | `/admin/roles/templates/:id` | Get role template | `roles.view` |
+| POST | `/admin/roles/templates` | Create role template | `roles.create` |
+| POST | `/admin/roles/:id/apply-template` | Apply template to role | `roles.update` |
+| GET | `/admin/roles/assignment-history` | Get assignment history | `roles.view` |
+| GET | `/admin/users/:id/role-history` | Get user role history | `users.view` |
+| POST | `/admin/users/:id/roles` | Assign role to user | `users.update` |
+| DELETE | `/admin/users/:id/roles/:roleId` | Remove role from user | `users.update` |
+| PUT | `/admin/roles/:id/permissions/bulk` | Bulk update permissions | `roles.update` |
+| POST | `/admin/users/bulk-assign-roles` | Bulk assign roles | `users.update` |
+| POST | `/admin/roles/:id/copy-permissions` | Copy permissions to role | `roles.update` |
 
 ### Activity Logs (NEW)
 
