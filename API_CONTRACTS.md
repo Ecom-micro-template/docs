@@ -50,6 +50,31 @@ API contract documentation for all microservices.
 | DELETE | `/admin/roles/:id` | Delete role | `roles.delete` |
 | GET | `/admin/permissions` | List all permissions | `roles.view` |
 
+### Activity Logs (NEW)
+
+| Method | Endpoint | Description | Permission |
+|--------|----------|-------------|------------|
+| GET | `/admin/activity-logs` | List activity logs with filtering | `activity.view` |
+| GET | `/admin/activity-logs/:id` | Get single log entry | `activity.view` |
+| GET | `/admin/activity-logs/stats` | Get activity statistics | `activity.view` |
+| GET | `/admin/activity-logs/user/:userId` | Get user activity | `activity.view` |
+| GET | `/admin/activity-logs/resource/:type/:id` | Get resource activity | `activity.view` |
+| GET | `/admin/activity-logs/export` | Export activity logs (CSV/JSON) | `activity.export` |
+| GET | `/admin/activity-logs/login-history` | Get login history | `activity.view` |
+
+### Settings
+
+| Method | Endpoint | Description | Permission |
+|--------|----------|-------------|------------|
+| GET | `/admin/settings` | Get all settings | `settings.view` |
+| GET | `/admin/settings/:key` | Get setting by key | `settings.view` |
+| PUT | `/admin/settings` | Bulk update settings | `settings.update` |
+| PUT | `/admin/settings/:key` | Update single setting | `settings.update` |
+| POST | `/admin/settings` | Create new setting | `settings.create` |
+| DELETE | `/admin/settings/:key` | Delete setting | `settings.delete` |
+| GET | `/admin/settings/categories` | Get settings categories | `settings.view` |
+| GET | `/settings` | Get public settings | Public |
+
 ---
 
 ## Catalog Service (`service-catalog`)
@@ -66,20 +91,39 @@ API contract documentation for all microservices.
 | GET | `/collections` | List collections | Public |
 | GET | `/search` | Search products | Public |
 
-### Admin Endpoints
+### Admin Products
 
 | Method | Endpoint | Description | Permission |
 |--------|----------|-------------|------------|
 | GET | `/admin/products` | List all products | `products.view` |
+| GET | `/admin/products/:id` | Get product by ID | `products.view` |
 | POST | `/admin/products` | Create product | `products.create` |
 | PUT | `/admin/products/:id` | Update product | `products.update` |
 | DELETE | `/admin/products/:id` | Delete product | `products.delete` |
 | POST | `/admin/products/:id/variants` | Add variant | `products.variants` |
 | POST | `/admin/products/:id/media` | Add media | `products.media` |
+
+### Admin Categories
+
+| Method | Endpoint | Description | Permission |
+|--------|----------|-------------|------------|
 | GET | `/admin/categories` | List categories | `categories.view` |
 | POST | `/admin/categories` | Create category | `categories.create` |
 | PUT | `/admin/categories/:id` | Update category | `categories.update` |
 | DELETE | `/admin/categories/:id` | Delete category | `categories.delete` |
+
+### Discounts (NEW)
+
+| Method | Endpoint | Description | Permission |
+|--------|----------|-------------|------------|
+| GET | `/admin/discounts` | List discounts | `discounts.view` |
+| GET | `/admin/discounts/:id` | Get discount by ID | `discounts.view` |
+| POST | `/admin/discounts` | Create discount | `discounts.create` |
+| PUT | `/admin/discounts/:id` | Update discount | `discounts.update` |
+| DELETE | `/admin/discounts/:id` | Delete discount | `discounts.delete` |
+| PATCH | `/admin/discounts/:id/activate` | Toggle activation | `discounts.activate` |
+| POST | `/admin/discounts/validate` | Validate discount code | `discounts.view` |
+| GET | `/admin/discounts/:id/usage` | Get usage statistics | `discounts.view` |
 
 ---
 
@@ -93,18 +137,21 @@ API contract documentation for all microservices.
 | GET | `/orders/:id` | Get order | Bearer |
 | GET | `/orders/my` | Get user's orders | Bearer |
 
-### Admin Endpoints
+### Admin Orders
 
 | Method | Endpoint | Description | Permission |
 |--------|----------|-------------|------------|
-| GET | `/admin/orders` | List orders | `orders.view` |
-| GET | `/admin/orders/:id` | Get order | `orders.view` |
+| GET | `/admin/orders` | List orders with filtering | `orders.view` |
+| GET | `/admin/orders/:id` | Get order details | `orders.view` |
 | PUT | `/admin/orders/:id` | Update order | `orders.update` |
 | POST | `/admin/orders/:id/cancel` | Cancel order | `orders.cancel` |
 | POST | `/admin/orders/:id/fulfill` | Create fulfillment | `orders.fulfill` |
 | POST | `/admin/orders/:id/refund` | Process refund | `orders.refund` |
-| GET | `/admin/orders/:id/timeline` | Get timeline | `orders.view` |
-| POST | `/admin/orders/:id/notes` | Add note | `orders.view` |
+| GET | `/admin/orders/:id/timeline` | Get order timeline | `orders.view` |
+| POST | `/admin/orders/:id/notes` | Add order note | `orders.view` |
+| GET | `/admin/orders/:id/notes` | Get order notes | `orders.view` |
+| GET | `/admin/orders/:id/print` | Generate print document | `orders.print` |
+| GET | `/admin/orders/export` | Export orders | `orders.export` |
 
 ---
 
@@ -119,42 +166,81 @@ API contract documentation for all microservices.
 | GET | `/customers/me/addresses` | Get addresses | Bearer |
 | POST | `/customers/me/addresses` | Add address | Bearer |
 
-### Admin Endpoints
+### Admin Customers
 
 | Method | Endpoint | Description | Permission |
 |--------|----------|-------------|------------|
-| GET | `/admin/customers` | List customers | `customers.view` |
-| GET | `/admin/customers/:id` | Get customer | `customers.view` |
+| GET | `/admin/customers` | List customers with filtering | `customers.view` |
+| GET | `/admin/customers/:id` | Get customer details | `customers.view` |
 | POST | `/admin/customers` | Create customer | `customers.create` |
 | PUT | `/admin/customers/:id` | Update customer | `customers.update` |
 | DELETE | `/admin/customers/:id` | Delete customer | `customers.delete` |
-| GET | `/admin/customers/:id/orders` | Get orders | `customers.view` |
-| POST | `/admin/customers/:id/notes` | Add note | `customers.notes` |
+| GET | `/admin/customers/:id/orders` | Get customer orders | `customers.view` |
+| POST | `/admin/customers/:id/notes` | Add customer note | `customers.notes` |
+| GET | `/admin/customers/:id/notes` | Get customer notes | `customers.view` |
+| GET | `/admin/customers/:id/activity` | Get customer activity | `customers.view` |
+| GET | `/admin/customers/export` | Export customers | `customers.export` |
+| GET | `/admin/customers/stats` | Get customer statistics | `customers.view` |
+
+### Customer Segments
+
+| Method | Endpoint | Description | Permission |
+|--------|----------|-------------|------------|
 | GET | `/admin/segments` | List segments | `customers.segments` |
+| POST | `/admin/segments` | Create segment | `customers.segments` |
+| PUT | `/admin/segments/:id` | Update segment | `customers.segments` |
+| DELETE | `/admin/segments/:id` | Delete segment | `customers.segments` |
+| POST | `/admin/customers/:id/segments` | Assign segments | `customers.segments` |
 
 ---
 
 ## Inventory Service (`service-inventory`)
 
-### Admin Endpoints
+### Admin Inventory
 
 | Method | Endpoint | Description | Permission |
 |--------|----------|-------------|------------|
-| GET | `/admin/inventory` | List stock | `inventory.view` |
+| GET | `/admin/inventory` | List stock items | `inventory.view` |
 | GET | `/admin/inventory/:id` | Get stock item | `inventory.view` |
 | POST | `/admin/inventory/adjust` | Adjust stock | `inventory.adjust` |
+| GET | `/admin/inventory/low-stock` | Get low stock alerts | `inventory.view` |
+| GET | `/admin/inventory/movements` | Get stock movements | `inventory.view` |
+| GET | `/admin/inventory/alerts` | Get stock alerts | `inventory.view` |
+| GET | `/admin/inventory/export` | Export inventory | `inventory.export` |
+| GET | `/admin/inventory/stats` | Get inventory statistics | `inventory.view` |
+
+### Warehouses
+
+| Method | Endpoint | Description | Permission |
+|--------|----------|-------------|------------|
 | GET | `/admin/warehouses` | List warehouses | `inventory.view` |
 | POST | `/admin/warehouses` | Create warehouse | `inventory.update` |
+| GET | `/admin/warehouses/:id/stock` | Get warehouse stock | `inventory.view` |
+
+### Transfers
+
+| Method | Endpoint | Description | Permission |
+|--------|----------|-------------|------------|
 | POST | `/admin/transfers` | Create transfer | `inventory.transfer` |
 | GET | `/admin/transfers` | List transfers | `inventory.view` |
 | PUT | `/admin/transfers/:id/receive` | Receive transfer | `inventory.receive` |
-| GET | `/admin/movements` | Stock movements | `inventory.view` |
 
 ---
 
 ## Reporting Service (`service-reporting`)
 
-### Admin Endpoints
+### Analytics Dashboard
+
+| Method | Endpoint | Description | Permission |
+|--------|----------|-------------|------------|
+| GET | `/admin/analytics/dashboard` | Combined dashboard metrics | `analytics.view` |
+| GET | `/admin/analytics/sales` | Sales overview | `analytics.view` |
+| GET | `/admin/analytics/products` | Product analytics | `analytics.view` |
+| GET | `/admin/analytics/customers` | Customer analytics | `analytics.view` |
+| GET | `/admin/analytics/inventory` | Inventory analytics | `analytics.view` |
+| GET | `/admin/analytics/export` | Export analytics data | `analytics.export` |
+
+### Reports
 
 | Method | Endpoint | Description | Permission |
 |--------|----------|-------------|------------|
@@ -174,8 +260,8 @@ API contract documentation for all microservices.
 ```json
 {
     "success": true,
-    "data": {...},
-    "message": "Operation successful"
+    "message": "Operation successful",
+    "data": {...}
 }
 ```
 
@@ -183,11 +269,12 @@ API contract documentation for all microservices.
 ```json
 {
     "success": true,
+    "message": "Data retrieved successfully",
     "data": [...],
-    "pagination": {
+    "meta": {
         "page": 1,
         "limit": 20,
-        "total": 150,
+        "total_count": 150,
         "total_pages": 8
     }
 }
@@ -197,8 +284,11 @@ API contract documentation for all microservices.
 ```json
 {
     "success": false,
-    "error": "Error message",
-    "code": "ERROR_CODE"
+    "error": {
+        "code": "ERROR_CODE",
+        "message": "Error message",
+        "details": null
+    }
 }
 ```
 
@@ -210,9 +300,33 @@ API contract documentation for all microservices.
 |------|---------|
 | 200 | OK - Success |
 | 201 | Created - Resource created |
+| 204 | No Content - Successful deletion |
 | 400 | Bad Request - Invalid input |
 | 401 | Unauthorized - No/invalid token |
 | 403 | Forbidden - No permission |
 | 404 | Not Found - Resource not found |
+| 409 | Conflict - Resource already exists |
 | 422 | Unprocessable - Validation error |
 | 500 | Server Error - Internal error |
+| 503 | Service Unavailable |
+
+---
+
+## Query Parameters
+
+### Pagination
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 20, max: 100)
+
+### Sorting
+- `sort_by` - Field to sort by
+- `sort_order` - `asc` or `desc`
+
+### Filtering
+- `search` - Search term
+- `status` - Filter by status
+- `date_from` - Start date (YYYY-MM-DD)
+- `date_to` - End date (YYYY-MM-DD)
+
+### Export
+- `format` - Export format (`csv`, `json`, `pdf`)
