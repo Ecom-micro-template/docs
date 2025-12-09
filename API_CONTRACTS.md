@@ -102,6 +102,14 @@ API contract documentation for all microservices.
 | DELETE | `/admin/products/:id` | Delete product | `products.delete` |
 | POST | `/admin/products/:id/variants` | Add variant | `products.variants` |
 | POST | `/admin/products/:id/media` | Add media | `products.media` |
+| GET | `/admin/products/export` | Export products (CSV/JSON) | `products.export` |
+| POST | `/admin/products/import` | Import products | `products.import` |
+| PUT | `/admin/products/bulk` | Bulk update products | `products.update` |
+| DELETE | `/admin/products/bulk` | Bulk delete products | `products.delete` |
+| PATCH | `/admin/products/bulk/publish` | Bulk publish/unpublish | `products.update` |
+| POST | `/admin/products/:id/duplicate` | Duplicate product | `products.create` |
+| GET | `/admin/products/stats` | Get product statistics | `products.view` |
+| GET | `/admin/products/import/template` | Get import template | `products.view` |
 
 ### Admin Categories
 
