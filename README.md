@@ -125,9 +125,9 @@ KilangDesaMurniBatik/
 
 | Service | Port | Description |
 |---------|------|-------------|
-| **service-auth** | 8001 | Authentication, JWT, RBAC |
+| **service-auth** | 8001 | Authentication, JWT, RBAC | 
 | **service-catalog** | 8002 | Products, Categories, Images |
-| **service-inventory** | 8003 | Stock levels, Warehouses, Transfers |
+| **service-inventory** | 8003 | Stock levels, Warehouses, Transfers |DONE
 | **service-order** | 8005 | Orders, Payments, Shipping |
 | **service-customer** | 8004 | Customer profiles, Wishlist |
 | **service-agent** | 8006 | Agents, Commissions |
