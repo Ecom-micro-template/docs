@@ -3,9 +3,15 @@
 ## Overview
 This document outlines all improvements needed to make the e-commerce platform production-ready for real business operations.
 
-**Last Updated:** December 14, 2024
+**Last Updated:** December 14, 2024 (v1.1)
 **Platform:** Kilang Desa Murni Batik E-Commerce
 **Status:** Development → Production Preparation
+
+### ✅ Recently Completed
+- **Payment Gateway:** Curlec (Razorpay Malaysia) integration completed
+- **Refund Processing:** Full and partial refunds via Curlec API
+- **Webhook Handling:** Payment event webhooks implemented
+- **Admin Routes:** All admin routes fixed and deployed to production
 
 ---
 
@@ -27,60 +33,63 @@ This document outlines all improvements needed to make the e-commerce platform p
 
 ## 1. Critical Issues
 
-### 1.1 Payment Processing - STUB ONLY
-**Status:** 🔴 CRITICAL - NOT FUNCTIONAL
+### 1.1 Payment Processing - ✅ COMPLETED
+**Status:** 🟢 IMPLEMENTED - Curlec (Razorpay Malaysia)
 
-**Current Implementation:**
-```go
-// service-order/internal/services/payment_service.go
-func (s *paymentService) ProcessPayment(req *PaymentRequest) (*Payment, error) {
-    // Currently marks ALL payments as successful without real processing
-    payment.Status = models.PaymentStatusCompleted
-    return payment, nil
-}
+**Implementation:** See `CURLEC-SETUP-GUIDE.md` for full details.
+
+**Completed Features:**
+- [x] Real payment gateway integration (Curlec/Razorpay)
+- [x] Credit card processing (Visa, Mastercard, Amex)
+- [x] FPX (Online Banking) support
+- [x] E-wallets (Touch 'n Go, GrabPay, Boost, ShopeePay)
+- [x] Payment webhooks handling
+- [x] Signature verification (HMAC-SHA256)
+- [ ] PCI-DSS compliance (handled by Curlec)
+
+**Files Created:**
+- `service-order/internal/providers/curlec/curlec.go` - API client
+- `service-order/internal/providers/curlec/provider.go` - Payment provider
+
+**API Endpoints:**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/payment/initiate` | Start Curlec payment |
+| POST | `/api/v1/payment/verify` | Verify payment |
+| POST | `/api/v1/payment/webhook` | Handle webhooks |
+
+**Environment Variables Required:**
+```bash
+PAYMENT_PROVIDER=curlec
+CURLEC_KEY_ID=rzp_test_xxxx
+CURLEC_KEY_SECRET=xxxxx
+CURLEC_WEBHOOK_SECRET=xxxxx
+CURLEC_IS_SANDBOX=true  # false for production
 ```
 
-**What's Missing:**
-- [ ] Real payment gateway integration
-- [ ] Credit card processing
-- [ ] 3D Secure verification
-- [ ] Payment webhooks handling
-- [ ] Payment reconciliation
-- [ ] PCI-DSS compliance
-
-**Recommended Payment Gateways:**
-| Gateway | Region | Features |
-|---------|--------|----------|
-| Stripe | Global | Cards, wallets, subscriptions |
-| Billplz | Malaysia | FPX, cards, e-wallets |
-| iPay88 | Malaysia | FPX, cards, e-wallets |
-| PayPal | Global | PayPal, cards |
-| Senangpay | Malaysia | FPX, cards |
-
-**Implementation Priority:** IMMEDIATE
+**Implementation Priority:** ✅ DONE
 
 ---
 
-### 1.2 Refund Processing - NOT IMPLEMENTED
-**Status:** 🔴 CRITICAL - STUB ONLY
+### 1.2 Refund Processing - ✅ COMPLETED
+**Status:** 🟢 IMPLEMENTED - Curlec Refunds
 
-**Current Implementation:**
-```go
-// service-order/internal/services/payment_service.go
-func (s *paymentService) ProcessRefund(paymentID uuid.UUID, amount float64, reason string) error {
-    return nil  // Does nothing!
-}
+**Completed Features:**
+- [x] Actual refund to payment gateway (Curlec API)
+- [x] Full refund support
+- [x] Partial refund support
+- [x] Refund status tracking
+- [x] Refund audit trail (logged with order_id, reason)
+- [ ] Refund notification to customer (via webhook)
+- [ ] Refund approval workflow (admin direct action)
+
+**API Endpoint:**
+```
+POST /api/v1/admin/orders/:id/refund
+Body: { "amount": 50.00, "reason": "Customer requested" }
 ```
 
-**What's Missing:**
-- [ ] Actual refund to payment gateway
-- [ ] Partial refund support
-- [ ] Refund status tracking
-- [ ] Refund notification to customer
-- [ ] Refund audit trail
-- [ ] Refund approval workflow
-
-**Implementation Priority:** IMMEDIATE
+**Implementation Priority:** ✅ DONE
 
 ---
 
@@ -193,43 +202,30 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
 
 ## 3. Payment System
 
-### 3.1 Payment Gateway Integration
-**Status:** 🔴 NOT IMPLEMENTED
+### 3.1 Payment Gateway Integration - ✅ COMPLETED
+**Status:** 🟢 IMPLEMENTED - Curlec (Razorpay Malaysia)
 
-**Required Integrations:**
-
-#### Option A: Stripe (Recommended for Global)
+**Implemented: Curlec (Razorpay Malaysia)**
 ```go
-// Required implementation
-type StripePaymentProvider struct {
-    client *stripe.Client
+// service-order/internal/providers/curlec/provider.go
+type PaymentProvider struct {
+    client *Client
+    logger *zap.Logger
 }
 
-func (s *StripePaymentProvider) ProcessPayment(req *PaymentRequest) (*PaymentResult, error)
-func (s *StripePaymentProvider) ProcessRefund(paymentID string, amount int64) (*RefundResult, error)
-func (s *StripePaymentProvider) HandleWebhook(payload []byte, signature string) error
+func (p *PaymentProvider) InitiatePayment(req *InitiatePaymentRequest) (*InitiatePaymentResponse, error)
+func (p *PaymentProvider) VerifyPayment(req *VerifyPaymentRequest) (*VerifyPaymentResponse, error)
+func (p *PaymentProvider) ProcessRefund(req *RefundRequest) (*RefundResponse, error)
+func (p *PaymentProvider) GetPaymentStatus(paymentID string) (*Payment, error)
 ```
 
-#### Option B: Billplz (Recommended for Malaysia)
-```go
-// Required implementation
-type BillplzPaymentProvider struct {
-    apiKey    string
-    secretKey string
-}
-
-func (b *BillplzPaymentProvider) CreateBill(req *BillRequest) (*Bill, error)
-func (b *BillplzPaymentProvider) GetBill(billID string) (*Bill, error)
-func (b *BillplzPaymentProvider) HandleCallback(data *CallbackData) error
-```
-
-**Implementation Tasks:**
-- [ ] Create payment provider interface
-- [ ] Implement Stripe provider
-- [ ] Implement Billplz provider (for Malaysian market)
-- [ ] Add payment method selection in checkout
-- [ ] Implement webhook handlers
-- [ ] Add payment status polling
+**Completed Tasks:**
+- [x] Create payment provider interface
+- [x] Implement Curlec provider (for Malaysian market)
+- [x] FPX, cards, e-wallets support
+- [x] Implement webhook handlers
+- [x] Add payment status polling
+- [ ] Add payment method selection in checkout UI
 - [ ] Implement payment retry logic
 - [ ] Add payment receipt generation
 
@@ -250,40 +246,31 @@ func (b *BillplzPaymentProvider) HandleCallback(data *CallbackData) error
 
 ---
 
-### 3.3 Refund System
-**Status:** 🔴 STUB ONLY
+### 3.3 Refund System - ✅ BASIC IMPLEMENTED
+**Status:** 🟢 IMPLEMENTED - Direct Admin Refund
 
-**Required Implementation:**
+**Implemented:**
 ```go
-type RefundService interface {
-    // Create refund request
-    CreateRefundRequest(orderID uuid.UUID, req *RefundRequest) (*Refund, error)
+// service-order/internal/providers/curlec/provider.go
+func (p *PaymentProvider) ProcessRefund(req *RefundRequest) (*RefundResponse, error)
 
-    // Process refund (admin approval)
-    ApproveRefund(refundID uuid.UUID, adminID uuid.UUID) error
-    RejectRefund(refundID uuid.UUID, adminID uuid.UUID, reason string) error
-
-    // Execute refund to payment gateway
-    ExecuteRefund(refundID uuid.UUID) error
-
-    // Get refund status
-    GetRefundStatus(refundID uuid.UUID) (*RefundStatus, error)
-}
+// service-order/internal/services/payment_service.go
+func (s *paymentService) ProcessCurlecRefund(orderID uuid.UUID, amount float64, reason string) (*RefundResult, error)
 ```
 
-**Refund Workflow:**
+**Current Workflow:**
 ```
-Customer Request → Admin Review → Approve/Reject → Process Gateway → Update Order → Notify Customer
+Admin Request → Process Gateway → Update Order → Log Event
 ```
 
-**Implementation Tasks:**
-- [ ] Create refund request model
-- [ ] Implement refund request API
+**Completed Tasks:**
+- [x] Integrate with payment gateway refund API (Curlec)
+- [x] Implement partial refund support
+- [x] Refund status tracking
+- [ ] Create customer refund request flow
 - [ ] Add refund approval workflow
-- [ ] Integrate with payment gateway refund API
 - [ ] Add refund notification emails
-- [ ] Implement partial refund support
-- [ ] Add refund reporting
+- [ ] Add refund reporting dashboard
 
 ---
 
@@ -874,9 +861,9 @@ payment.failed
 ### Phase 1: Critical (Week 1-2)
 **Must complete before accepting real payments**
 
-- [ ] Payment gateway integration (Stripe or Billplz)
-- [ ] Refund processing implementation
-- [ ] 2FA for admin users
+- [x] Payment gateway integration ✅ (Curlec - Dec 14, 2024)
+- [x] Refund processing implementation ✅ (Curlec - Dec 14, 2024)
+- [ ] 2FA for admin users ⬅️ **NEXT PRIORITY**
 - [ ] SSL/TLS enforcement
 - [ ] Security headers
 - [ ] Database backup automation
@@ -923,13 +910,13 @@ payment.failed
 |---------|--------|----------------|
 | auth | 🟡 Partial | 2FA, brute force protection |
 | catalog | 🟢 Good | Reviews, SEO |
-| order | 🟡 Partial | Refunds, returns |
+| order | 🟢 Good | Returns workflow |
 | customer | 🟡 Partial | Loyalty, preferences |
 | inventory | 🟡 Partial | Alerts, automation |
 | notification | 🟡 Partial | More templates, preferences |
 | reporting | 🟡 Partial | More reports, real-time |
 | agent | 🟢 Good | Minor improvements |
-| payment | 🔴 Critical | Real gateway needed |
+| payment | 🟢 **Done** | Curlec integrated ✅ |
 
 ---
 
@@ -980,6 +967,7 @@ payment.failed
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2024-12-14 | Initial comprehensive analysis |
+| 1.1 | 2024-12-14 | Updated: Payment (Curlec) and Refund processing completed |
 
 ---
 
