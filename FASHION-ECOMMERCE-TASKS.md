@@ -285,11 +285,11 @@ GET    /api/v1/flash-sales/:id/availability   # Check remaining stock
 
 #### 🔥 HIGH PRIORITY
 
-| ID | Task | Description | Effort |
-|----|------|-------------|--------|
-| CUS-001 | **Variant-Specific Wishlist** | Update wishlist to store `variant_id` instead of just `product_id` | 1-2 days |
-| CUS-002 | **Back-in-Stock Notifications** | Allow customers to subscribe for restock alerts on specific variants | 2-3 days |
-| CUS-003 | **Style Preferences** | Store preferred colors, patterns, occasions, fit preferences | 1-2 days |
+| ID | Task | Description | Effort | Status |
+|----|------|-------------|--------|--------|
+| CUS-001 | **Variant-Specific Wishlist** | Update wishlist to store `variant_id` instead of just `product_id` | 1-2 days | ✅ DONE |
+| CUS-002 | **Back-in-Stock Notifications** | Allow customers to subscribe for restock alerts on specific variants | 2-3 days | ❌ |
+| CUS-003 | **Style Preferences** | Store preferred colors, patterns, occasions, fit preferences | 1-2 days | ❌ |
 
 #### 📦 MEDIUM PRIORITY
 
