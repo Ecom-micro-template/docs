@@ -3,9 +3,11 @@
 ## Overview
 This document outlines all improvements needed to make the e-commerce platform production-ready for real business operations.
 
-**Last Updated:** December 14, 2024 (v1.1)
+**Last Updated:** December 15, 2024 (v1.5)
 **Platform:** Kilang Desa Murni Batik E-Commerce
 **Status:** Development → Production Preparation
+
+> **IMPORTANT:** See [SECURITY-AUDIT-REPORT.md](./SECURITY-AUDIT-REPORT.md) for detailed security findings that MUST be fixed before production deployment.
 
 ### ✅ Recently Completed
 - **Payment Gateway:** Curlec (Razorpay Malaysia) integration completed
@@ -16,6 +18,7 @@ This document outlines all improvements needed to make the e-commerce platform p
 - **Security Headers:** Enhanced nginx security headers (CSP, Permissions-Policy)
 - **Database Backups:** Automated backup scripts with rotation (7/30/365 days)
 - **Error Tracking:** Sentry integration for all microservices
+- **Security Audit:** Comprehensive audit completed (Dec 15, 2024)
 
 ---
 
@@ -32,6 +35,60 @@ This document outlines all improvements needed to make the e-commerce platform p
 10. [Infrastructure & DevOps](#10-infrastructure--devops)
 11. [API & Integration](#11-api--integration)
 12. [Implementation Roadmap](#12-implementation-roadmap)
+
+---
+
+## 0. SECURITY AUDIT FINDINGS (December 15, 2024)
+
+> **STATUS: BLOCKS PRODUCTION DEPLOYMENT**
+
+### Critical Security Issues (Must Fix Immediately)
+
+| # | Issue | Location | Risk | Status |
+|---|-------|----------|------|--------|
+| 1 | **Production secrets in Git** | `infra-platform/.env` | Full DB/JWT access compromise | [ ] Not Fixed |
+| 2 | **Password reset token in response** | `service-auth/handlers/auth_handler.go:320-327` | Account takeover | [ ] Not Fixed |
+| 3 | **JWT middleware bypass** | `frontend-admin/middleware.ts:169-176` | Any user can access admin routes | [ ] Not Fixed |
+| 4 | **Shared database (all services)** | `docker-compose.vps.yml` | Data integrity, coupling | [ ] Not Fixed |
+| 5 | **No SSL/TLS** | `nginx.conf` | Plaintext passwords/payment data | [ ] Not Fixed |
+
+### High Severity Issues
+
+| # | Issue | Location | Risk | Status |
+|---|-------|----------|------|--------|
+| 6 | In-memory idempotency | `service-inventory/events/idempotency.go` | Duplicate events on restart | [ ] Not Fixed |
+| 7 | No payment idempotency | `service-order/services/payment_service.go` | Double charges | [ ] Not Fixed |
+| 8 | Panic leaks internal errors | `lib-common/middleware/recovery.go` | Info disclosure | [ ] Not Fixed |
+| 9 | JWT in localStorage | `frontend-admin/src/lib/api/auth.ts` | XSS token theft | [ ] Not Fixed |
+| 10 | Default passwords in compose | `docker-compose.vps.yml` | Weak credentials if env missing | [ ] Not Fixed |
+
+### Immediate Actions Required
+
+```bash
+# 1. Rotate ALL production secrets NOW
+# Generate new secrets:
+openssl rand -base64 32  # For JWT_SECRET
+openssl rand -base64 24  # For DB passwords
+
+# 2. Remove secrets from git history
+git filter-branch --force --index-filter \
+  'git rm --cached --ignore-unmatch infra-platform/.env' \
+  --prune-empty --tag-name-filter cat -- --all
+
+# 3. Add to .gitignore
+echo "**/.env" >> .gitignore
+echo "!**/.env.example" >> .gitignore
+
+# 4. Force push cleaned history (coordinate with team)
+git push origin --force --all
+```
+
+### Full Report
+See **[SECURITY-AUDIT-REPORT.md](./SECURITY-AUDIT-REPORT.md)** for:
+- Detailed findings with code snippets
+- Specific remediation code for each issue
+- Scalability analysis
+- Compliance gaps (PCI-DSS, PDPA)
 
 ---
 
@@ -995,6 +1052,7 @@ payment.failed
 | 1.2 | 2024-12-14 | Updated: 2FA/MFA for admin users implemented |
 | 1.3 | 2024-12-14 | Updated: Security headers and database backup scripts |
 | 1.4 | 2024-12-14 | Updated: Sentry error tracking integration for all services |
+| 1.5 | 2024-12-15 | **MAJOR: Added Security Audit findings section (5 critical, 5 high issues)** |
 
 ---
 
