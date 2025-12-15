@@ -56,7 +56,7 @@ This document identifies the gaps between the **current implementation** and the
 |----|------|-------------|--------|--------|
 | CAT-001 | **Flash Sale Engine** | Add dedicated flash sale model with: time limits, stock limits per SKU, purchase limits per customer, countdown support | 3-5 days | ✅ DONE |
 | CAT-002 | **Auto-Collections** | Rules-based collections (e.g., "New in 30 days", "Price < RM100", "Category = Silk") | 2-3 days | ❌ |
-| CAT-003 | **Variant Availability API** | Single endpoint returning full Size×Color matrix with stock status for PDP | 1-2 days | ❌ |
+| CAT-003 | **Variant Availability API** | Single endpoint returning full Size×Color matrix with stock status for PDP | 1-2 days | ✅ DONE |
 | CAT-004 | **Shop the Look** | Model for grouping products as coordinated outfits (baju + sampin + songkok) | 2-3 days | ❌ |
 
 #### 📦 MEDIUM PRIORITY
@@ -592,7 +592,7 @@ PUT    /api/v1/admin/returns/:id/complete   # Complete return (trigger refund)
 
 | ID | Task | Description | Effort | Status |
 |----|------|-------------|--------|--------|
-| FE-001 | **Variant Matrix on PDP** | Size/Color selector with real-time availability matrix | 2-3 days | ❌ |
+| FE-001 | **Variant Matrix on PDP** | Size/Color selector with real-time availability matrix | 2-3 days | ✅ DONE |
 | FE-002 | **Flash Sale Page** | Dedicated page with countdown, stock remaining | 2-3 days | ✅ DONE |
 | FE-003 | **Faceted Search** | Filter by size, color, price, fabric, collection | 3-5 days | ❌ |
 | FE-004 | **Size Guide Modal** | Interactive size guide with measurement tips | 1-2 days | ❌ |
