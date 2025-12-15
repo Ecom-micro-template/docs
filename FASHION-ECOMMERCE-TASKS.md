@@ -595,7 +595,7 @@ PUT    /api/v1/admin/returns/:id/complete   # Complete return (trigger refund)
 | FE-001 | **Variant Matrix on PDP** | Size/Color selector with real-time availability matrix | 2-3 days | ✅ DONE |
 | FE-002 | **Flash Sale Page** | Dedicated page with countdown, stock remaining | 2-3 days | ✅ DONE |
 | FE-003 | **Faceted Search** | Filter by size, color, price, fabric, collection | 3-5 days | ❌ |
-| FE-004 | **Size Guide Modal** | Interactive size guide with measurement tips | 1-2 days | ❌ |
+| FE-004 | **Size Guide Modal** | Interactive size guide with measurement tips | 1-2 days | ✅ DONE |
 
 #### 📦 MEDIUM PRIORITY
 
