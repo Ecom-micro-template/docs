@@ -55,7 +55,7 @@ This document identifies the gaps between the **current implementation** and the
 | ID | Task | Description | Effort | Status |
 |----|------|-------------|--------|--------|
 | CAT-001 | **Flash Sale Engine** | Add dedicated flash sale model with: time limits, stock limits per SKU, purchase limits per customer, countdown support | 3-5 days | ✅ DONE |
-| CAT-002 | **Auto-Collections** | Rules-based collections (e.g., "New in 30 days", "Price < RM100", "Category = Silk") | 2-3 days | ❌ |
+| CAT-002 | **Auto-Collections** | Rules-based collections (e.g., "New in 30 days", "Price < RM100", "Category = Silk") | 2-3 days | ✅ DONE |
 | CAT-003 | **Variant Availability API** | Single endpoint returning full Size×Color matrix with stock status for PDP | 1-2 days | ✅ DONE |
 | CAT-004 | **Shop the Look** | Model for grouping products as coordinated outfits (baju + sampin + songkok) | 2-3 days | ❌ |
 
