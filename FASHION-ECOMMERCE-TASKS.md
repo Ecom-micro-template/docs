@@ -19,7 +19,7 @@ This document identifies the gaps between the **current implementation** and the
 | service-customer | 6 | 1 | 3 | ~65% |
 | service-order | 7 | 0 | 1 | ~90% |
 | frontend-storefront | - | - | - | ~75% |
-| frontend-admin | - | - | - | ~80% |
+| frontend-admin | - | - | - | ~85% |
 
 ---
 
@@ -627,7 +627,7 @@ PUT    /api/v1/admin/returns/:id/complete   # Complete return (trigger refund)
 | ID | Task | Description | Effort | Status |
 |----|------|-------------|--------|--------|
 | ADM-001 | **Flash Sale Management** | Create/edit flash sales with item picker | 3-5 days | ✅ DONE |
-| ADM-002 | **Variant Matrix Editor** | Bulk edit variants (generate combinations, bulk pricing) | 2-3 days | ❌ |
+| ADM-002 | **Variant Matrix Editor** | Bulk edit variants (generate combinations, bulk pricing) | 2-3 days | ✅ DONE |
 | ADM-003 | **Returns Management** | View, approve/reject returns, process refunds | 2-3 days | ✅ DONE |
 
 #### 📦 MEDIUM PRIORITY
