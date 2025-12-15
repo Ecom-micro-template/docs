@@ -637,7 +637,7 @@ PUT    /api/v1/admin/returns/:id/complete   # Complete return (trigger refund)
 | ADM-004 | **Collection Builder** | Drag-drop products, set rules for auto-collections | 2-3 days |
 | ADM-005 | **Lookbook Creator** | Build editorial lookbooks with product links | 2-3 days |
 | ADM-006 | **Customer Style Profiles** | View customer preferences for personalization | 1-2 days |
-| ADM-007 | **Low Stock Dashboard** | Enhanced alerts with reorder suggestions | 1-2 days |
+| ADM-007 | **Low Stock Dashboard** | Enhanced alerts with reorder suggestions | 1-2 days | ✅ DONE |
 
 ---
 
