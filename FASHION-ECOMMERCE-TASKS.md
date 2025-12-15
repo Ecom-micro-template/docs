@@ -14,12 +14,12 @@ This document identifies the gaps between the **current implementation** and the
 
 | Service | Implemented | Partial | Missing | Completion |
 |---------|-------------|---------|---------|------------|
-| service-catalog | 12 | 2 | 4 | ~70% |
+| service-catalog | 14 | 2 | 2 | ~85% |
 | service-inventory | 8 | 0 | 0 | ~95% |
-| service-customer | 5 | 1 | 4 | ~55% |
-| service-order | 5 | 1 | 2 | ~70% |
-| frontend-storefront | - | - | - | ~50% |
-| frontend-admin | - | - | - | ~60% |
+| service-customer | 6 | 1 | 3 | ~65% |
+| service-order | 7 | 0 | 1 | ~90% |
+| frontend-storefront | - | - | - | ~75% |
+| frontend-admin | - | - | - | ~70% |
 
 ---
 
@@ -476,7 +476,7 @@ type CustomerStyleProfile struct {
 
 | ID | Task | Description | Effort | Status |
 |----|------|-------------|--------|--------|
-| ORD-001 | **Self-Service Returns Portal** | Customer-initiated returns with reason selection, status tracking | 3-5 days | ❌ |
+| ORD-001 | **Self-Service Returns Portal** | Customer-initiated returns with reason selection, status tracking | 3-5 days | ✅ DONE |
 | ORD-002 | **Flash Sale Purchase Validation** | Check per-customer limits, flash sale stock before checkout | 1-2 days | ✅ DONE |
 
 #### 📦 MEDIUM PRIORITY
@@ -594,19 +594,19 @@ PUT    /api/v1/admin/returns/:id/complete   # Complete return (trigger refund)
 |----|------|-------------|--------|--------|
 | FE-001 | **Variant Matrix on PDP** | Size/Color selector with real-time availability matrix | 2-3 days | ✅ DONE |
 | FE-002 | **Flash Sale Page** | Dedicated page with countdown, stock remaining | 2-3 days | ✅ DONE |
-| FE-003 | **Faceted Search** | Filter by size, color, price, fabric, collection | 3-5 days | ❌ |
+| FE-003 | **Faceted Search** | Filter by size, color, price, fabric, collection | 3-5 days | ✅ DONE |
 | FE-004 | **Size Guide Modal** | Interactive size guide with measurement tips | 1-2 days | ✅ DONE |
 
 #### 📦 MEDIUM PRIORITY
 
 | ID | Task | Description | Effort |
 |----|------|-------------|--------|
-| FE-005 | **Collections Landing** | Browse by collection (Raya 2024, Wedding, etc.) | 2 days |
+| FE-005 | **Collections Landing** | Browse by collection (Raya 2024, Wedding, etc.) | 2 days | ✅ DONE |
 | FE-006 | **Back-in-Stock Subscribe** | Button on OOS variants to get notified | 1 day |
 | FE-007 | **Recently Viewed** | Show recently viewed products | 1 day |
 | FE-008 | **Wishlist with Variants** | Save specific size/color combinations | 1-2 days |
 | FE-009 | **Shop the Look** | Display coordinated outfit suggestions | 2 days |
-| FE-010 | **Customer Account: Returns** | Self-service returns initiation | 2-3 days |
+| FE-010 | **Customer Account: Returns** | Self-service returns initiation | 2-3 days | ✅ DONE |
 
 #### 🧊 LOW PRIORITY
 
