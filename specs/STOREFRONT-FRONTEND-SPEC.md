@@ -712,7 +712,7 @@ export const useCartStore = create<CartState>()(
       ),
     })),
     {
-      name: 'kilang-cart',
+      name: 'ecommerce-cart',
       partialize: (state) => ({ items: state.items }), // Only persist items
     }
   )
@@ -885,7 +885,7 @@ export const useWishlistStore = create<WishlistState>()(
       isPending: (productId) => get().pendingToggles.has(productId),
     }),
     {
-      name: 'kilang-wishlist',
+      name: 'ecommerce-wishlist',
       storage: {
         getItem: (name) => {
           const str = localStorage.getItem(name);
@@ -1870,4 +1870,4 @@ interface UpdateCartRequest {
 
 ---
 
-*Generated for Kilang Desa Murni Batik - Fashion eCommerce Platform*
+*Generated for E-commerce Platform - Fashion eCommerce Platform*

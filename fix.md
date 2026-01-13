@@ -1,4 +1,4 @@
-# Architecture & Code Improvement Plan: Kilang Desa Murni Batik
+# Architecture & Code Improvement Plan: E-commerce Platform
 
 ## Executive Summary
 

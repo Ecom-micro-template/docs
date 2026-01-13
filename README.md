@@ -1,12 +1,12 @@
-# Kilang Desa Murni Batik
+# E-commerce Platform
 
-> 🛒 E-commerce platform for Malaysian batik products with microservices architecture
+> 🛒 E-commerce platform for Malaysian product products with microservices architecture
 
 ---
 
 ## 📋 Project Overview
 
-**Kilang Desa Murni Batik** is a full-featured e-commerce platform built with microservices architecture, designed for selling traditional Malaysian batik products online.
+**E-commerce Platform** is a full-featured e-commerce platform built with microservices architecture, designed for selling traditional Malaysian product products online.
 
 ### Tech Stack
 
@@ -69,7 +69,7 @@
 ## 📁 Repository Structure
 
 ```
-KilangDesaMurniBatik/
+ecommerceDesaMurniproduct/
 │
 ├── 🔧 infra-platform/          # Infrastructure & deployment
 │   ├── docker-compose.vps.yml  # Production Docker Compose
@@ -114,7 +114,7 @@ KilangDesaMurniBatik/
 ├── 🗄️ database/                # Database migrations
 │   └── migrations/             # SQL migration files
 │
-└── 📖 kilang-docs/             # This documentation
+└── 📖 ecommerce-docs/             # This documentation
 ```
 
 ---
@@ -167,8 +167,8 @@ KilangDesaMurniBatik/
 
 ```bash
 # Clone all repositories
-gh repo list KilangDesaMurniBatik --json name -q ".[].name" | \
-  xargs -I {} git clone https://github.com/KilangDesaMurniBatik/{}.git
+gh repo list ecommerceDesaMurniproduct --json name -q ".[].name" | \
+  xargs -I {} git clone https://github.com/ecommerceDesaMurniproduct/{}.git
 ```
 
 ### Deploy to VPS
@@ -197,10 +197,10 @@ docker compose -f docker-compose.vps.yml ps
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `DOMAIN` | VPS IP or domain | `72.62.67.167` |
-| `POSTGRES_USER` | Database user | `kilang` |
+| `POSTGRES_USER` | Database user | `ecommerce` |
 | `POSTGRES_PASSWORD` | Database password | `secure_password` |
 | `JWT_SECRET` | JWT signing key (32+ chars) | `your_secret_key` |
-| `MINIO_ROOT_USER` | MinIO admin user | `kilangadmin` |
+| `MINIO_ROOT_USER` | MinIO admin user | `ecommerceadmin` |
 | `MINIO_ROOT_PASSWORD` | MinIO admin password | `secure_password` |
 | `CORS_ORIGINS` | Allowed origins | `http://domain.com` |
 | `SMTP_USER` | Email username | `email@gmail.com` |
@@ -272,4 +272,4 @@ For issues and questions, please create an issue in the relevant repository.
 
 ## 📜 License
 
-MIT License - Kilang Desa Murni Batik © 2024
+MIT License - E-commerce Platform © 2024

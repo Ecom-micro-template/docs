@@ -1,6 +1,6 @@
 # Frontend Storefront Improvement Tasks
 
-> **Project:** Kilang Desa Murni Batik - Premium Fashion eCommerce
+> **Project:** E-commerce Platform - Premium Fashion eCommerce
 > **Stack:** Next.js 14, TypeScript, Tailwind, Zustand
 > **Backend:** Go Microservices (REST API)
 > **Goal:** Premium, Fast, Visually Rich Shopping Experience
@@ -547,4 +547,4 @@ app/(shop)/products/[slug]/page.tsx
 
 *Document Version: 2.0*
 *Updated: December 2024*
-*Project: Kilang Desa Murni Batik Storefront*
+*Project: E-commerce Platform Storefront*
